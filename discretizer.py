@@ -41,11 +41,8 @@ class CSVDiscretizer(object):
     def _discretize_empty_values(self):
         retirar_elementos = []
         for animal_data in self.data:
-            # for k, v in animal_data.items():
-            #     if v == '' or v == ' ':
-            #         animal_data[k] = 'Unknown'
             for k, v in animal_data.items():
-                if v == '' or v == 'Unknown':
+                if v == '' or v == 'Unknown' or v == ' ' or v == 'Unknown':
                     retirar_elementos.append(animal_data)
         self.data = [x for x in self.data if x not in retirar_elementos]
         print(len(self.data))
@@ -111,10 +108,12 @@ class CSVDiscretizer(object):
 
             if animal_data[Attr.Breed.value] == 'Queensland Heeler':
                 animal_data[Attr.Breed.value] = 'Australian Cattle Dog'
-
+            
+            retirar_elementos = []
             if animal_data[Attr.Breed.value] == 'Unknown':
-                print(animal_data)
-                input()
+                retirar_elementos.append(animal_data)
+                self.data = [x for x in self.data if x not in retirar_elementos]
+                print(len(self.data))
 
         print('Done: discretize_breed_names')
 
@@ -126,17 +125,17 @@ class CSVDiscretizer(object):
             if 'Small' == animal_data[Attr.AgeuponOutcome.value]:
                 value = 1
             elif 'Small to Medium' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 2
+                value = 1 
             elif 'Medium' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 3
+                value = 2
             elif 'Medium to Large' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 4
+                value = 3
             elif 'Large' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 5
+                value = 4
             elif 'Large to Giant' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 6
+                value = 5 
             elif 'Giant' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 7
+                value = 5
             else:
                 print(animal_data[Attr.AgeuponOutcome.value])
                 input()
@@ -152,15 +151,18 @@ class CSVDiscretizer(object):
          age_min_value = min(age_values)
          age_max_value = max(age_values)
          print('Min', age_min_value)
-         print('Max', age_max_values)
+         print('Max', age_max_value)
          print('Metade', age_max_value)
          print('1/4', age_max_value / 4)
          print('3/4', age_max_value - (age_max_value / 4))
-         lifespan_values = [animal[Attr.Lifespan.value] for animal in self.data]
+         lifespan_values = []
+         for animal in self.data:
+             if animal[Attr.Lifespan.value]:
+                 lifespan_values.append(animal[Attr.Lifespan.value])
          lifespan_min_value = min(lifespan_values)
          lifespan_max_value = max(lifespan_values)
          print('Min', lifespan_min_value)
-         print('Max', lifespan_max_values)
+         print('Max', lifespan_max_value)
          print('Metade', lifespan_max_value)
          print('1/4', lifespan_max_value / 4)
          print('3/4', lifespan_max_value - (lifespan_max_value / 4))
@@ -168,26 +170,25 @@ class CSVDiscretizer(object):
 
          for x in self.data:
              if x[Attr.AgeuponOutcome.value] >= age_min_value and x[Attr.AgeuponOutcome.value] < age_max_value / 4:
-                 value = ''
+                 value = '1'
              elif x[Attr.AgeuponOutcome.value] >= age_max_value / 4 and x[Attr.AgeuponOutcome.value] < age_max_value / 2:
-                 value = ''
+                 value = '2'
              elif x[Attr.AgeuponOutcome.value] >= age_max_value / 2 and x[Attr.AgeuponOutcome.value] < age_max_value - (age_max_value / 4):
-                 value = ''
+                 value = '3'
              elif x[Attr.AgeuponOutcome.value] >= age_max_value - (age_max_value / 4):
-                 value = ''
-             x[Attr.AgeuponOutcome.value] = ''
+                 value = '4'
+             x[Attr.AgeuponOutcome.value] = value
 
          for x in self.data:
              if x[Attr.Lifespan.value] >= lifespan_min_value and x[Attr.Lifespan.value] < lifespan_max_value / 4:
-                 value = ''
+                 value = '1'
              elif x[Attr.Lifespan.value] >= lifespan_max_value / 4 and x[Attr.Lifespan.value] < lifespan_max_value / 2:
-                 value = ''
+                 value = '2'
              elif x[Attr.Lifespan.value] >= lifespan_max_value / 2 and x[Attr.Lifespan.value] < lifespan_max_value - (lifespan_max_value / 4):
-                 value = ''
+                 value = '3'
              elif x[Attr.Lifespan.value] >= lifespan_max_value - (lifespan_max_value / 4):
-                 value = ''
-             x[Attr.Lifespan.value] = ''
-         input()
+                 value = '4'
+             x[Attr.Lifespan.value] = value
 
     """
     Método para escrever o que estiver em self.data em um CSV
@@ -219,6 +220,6 @@ class CSVDiscretizer(object):
 
 if __name__ == '__main__':
     csv_disc = CSVDiscretizer('train.csv', 'discret_train.csv')
-    # csv_disc.write_csv_file(csv_disc.new_csv)
+    csv_disc.write_csv_file(csv_disc.new_csv)
     print('Done: final')
 
