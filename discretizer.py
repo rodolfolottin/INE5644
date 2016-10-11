@@ -148,38 +148,43 @@ class CSVDiscretizer(object):
     """
     def create_intervals(self):
          age_values = [animal[Attr.AgeuponOutcome.value] for animal in self.data]
-         print(set(age_values))
+         print('Age intervals')
          age_min_value = min(age_values)
          age_max_value = max(age_values)
-         for animal in self.data:
-             print(animal)
-             lifespan_values = animal[Attr.Lifespan.value]
-             # lifespan_values = [animal[Attr.Lifespan.value] for animal in self.data]
-             # input()
-         # lifespan_min_value = min(lifespan_values)
-         # lifespan_max_value = max(lifespan_values)
-         #print(set(lifespan_values))
+         print('Min', age_min_value)
+         print('Max', age_max_values)
+         print('Metade', age_max_value)
+         print('1/4', age_max_value / 4)
+         print('3/4', age_max_value - (age_max_value / 4))
+         lifespan_values = [animal[Attr.Lifespan.value] for animal in self.data]
+         lifespan_min_value = min(lifespan_values)
+         lifespan_max_value = max(lifespan_values)
+         print('Min', lifespan_min_value)
+         print('Max', lifespan_max_values)
+         print('Metade', lifespan_max_value)
+         print('1/4', lifespan_max_value / 4)
+         print('3/4', lifespan_max_value - (lifespan_max_value / 4))
          input()
 
          for x in self.data:
-             if x[Attr.AgeuponOutcome.value] >= min_value and x[Attr.AgeuponOutcome.value] < max_value / 4:
+             if x[Attr.AgeuponOutcome.value] >= age_min_value and x[Attr.AgeuponOutcome.value] < age_max_value / 4:
                  value = ''
-             elif x[Attr.AgeuponOutcome.value] >= max_value / 4 and x[Attr.AgeuponOutcome.value] < max_value / 2:
+             elif x[Attr.AgeuponOutcome.value] >= age_max_value / 4 and x[Attr.AgeuponOutcome.value] < age_max_value / 2:
                  value = ''
-             elif x[Attr.AgeuponOutcome.value] >= max_value / 2 and x[Attr.AgeuponOutcome.value] < max_value - (max_value / 4):
+             elif x[Attr.AgeuponOutcome.value] >= age_max_value / 2 and x[Attr.AgeuponOutcome.value] < age_max_value - (age_max_value / 4):
                  value = ''
-             elif x[Attr.AgeuponOutcome.value] >= max_value - (max_value / 4):
+             elif x[Attr.AgeuponOutcome.value] >= age_max_value - (age_max_value / 4):
                  value = ''
              x[Attr.AgeuponOutcome.value] = ''
 
          for x in self.data:
-             if x[Attr.Lifespan.value] >= min_value and x[Attr.Lifespan.value] < max_value / 4:
+             if x[Attr.Lifespan.value] >= lifespan_min_value and x[Attr.Lifespan.value] < lifespan_max_value / 4:
                  value = ''
-             elif x[Attr.Lifespan.value] >= max_value / 4 and x[Attr.Lifespan.value] < max_value / 2:
+             elif x[Attr.Lifespan.value] >= lifespan_max_value / 4 and x[Attr.Lifespan.value] < lifespan_max_value / 2:
                  value = ''
-             elif x[Attr.Lifespan.value] >= max_value / 2 and x[Attr.Lifespan.value] < max_value - (max_value / 4):
+             elif x[Attr.Lifespan.value] >= lifespan_max_value / 2 and x[Attr.Lifespan.value] < lifespan_max_value - (lifespan_max_value / 4):
                  value = ''
-             elif x[Attr.Lifespan.value] >= max_value - (max_value / 4):
+             elif x[Attr.Lifespan.value] >= lifespan_max_value - (lifespan_max_value / 4):
                  value = ''
              x[Attr.Lifespan.value] = ''
          input()
