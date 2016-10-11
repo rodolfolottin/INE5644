@@ -5,93 +5,215 @@ from attr import Attr
 
 class CSVDiscretizer(object):
 
-    def __init__(self, csv, new_csv):
+    def __init__(self, csv, new_csv, one_way=True):
         self.original_csv = 'csv_files/' + csv
         self.new_csv = 'csv_files/' + new_csv
         # A way to know how many different animal' species the csv has
         self.dog_breeds = set()
         self.cat_breeds = set()
         self.data = None
-        self.populate_data_from_csv()
-        self.discretize_ageuponoutcom()
-        # self.discretize_breed_names()
-        self.write_csv_file()
+        self.breed_info = None
+        if one_way:
+            self.populate_data_from_csv(self.original_csv)
+            self._discretize_empty_values()
+            self.discretize_ageuponoutcom()
+            self.discretize_breed_names()
+            self.populate_breed_from_csv()
+            self.merge_breed_with_tuples()
+            self.create_intervals()
 
     """
-    Populate data from original_csv in data
+    Popula data de csv
     """
-    def populate_data_from_csv(self):
-        with open(self.original_csv, 'rt') as csvfile:
+    def populate_data_from_csv(self, csv_file, should_return=False):
+        with open(csv_file, 'rt') as csvfile:
             dictofdata = csv.DictReader(csvfile, delimiter=',')
-            self.data = [{Attr.OutcomeType.value: row[Attr.OutcomeType.value], Attr.OutcomeSubtype.value: row[Attr.OutcomeSubtype.value], Attr.AnimalType.value: row[Attr.AnimalType.value],
+            self.data = [{Attr.OutcomeType.value: row[Attr.OutcomeType.value], Attr.AnimalType.value: row[Attr.AnimalType.value],
                     Attr.SexuponOutcome.value: row[Attr.SexuponOutcome.value], Attr.AgeuponOutcome.value: row[Attr.AgeuponOutcome.value], Attr.Breed.value: row[Attr.Breed.value],
                     Attr.Color.value: row[Attr.Color.value]} for row in dictofdata]
-            print("Quantidade de tuplas importadas do {}: {}".format(self.original_csv, len(self.data)))
+            print("Quantidade de tuplas importadas do {}: {}".format(csv_file, len(self.data)))
+            if should_return:
+                return self.data
 
     """
-    Method to insert None in empty values:columns
+    Método para retirar elementos que não tenham todos valores preenchidos.
     """
     def _discretize_empty_values(self):
+        retirar_elementos = []
         for animal_data in self.data:
+            # for k, v in animal_data.items():
+            #     if v == '' or v == ' ':
+            #         animal_data[k] = 'Unknown'
             for k, v in animal_data.items():
-                if v == '' or v == ' ':
-                    animal_data[k] = None
+                if v == '' or v == 'Unknown':
+                    retirar_elementos.append(animal_data)
+        self.data = [x for x in self.data if x not in retirar_elementos]
+        print(len(self.data))
         print('Done: _discretize_empty_values')
 
     """
-    Method to discretize the value AgeuponOutcome, which cames as year, months or weeks
+    Método utilizado para discretizar o atributo AgeuponOutcome, que pode vir como semana, mês ou ano. Discretizado para dias.
     """
     def discretize_ageuponoutcom(self):
         for animal_data in self.data:
-            if animal_data[Attr.AgeuponOutcome.value]:
-                if 'year' or 'years' in animal_data[Attr.AgeuponOutcome.value]:
+            if animal_data[Attr.AgeuponOutcome.value] and animal_data[Attr.AgeuponOutcome.value] != 'Unknown':
+                if 'year' in animal_data[Attr.AgeuponOutcome.value]:
                     day_multiplier = 365
-                elif 'month' or 'months' in animal_data[Attr.AgeuponOutcome.value]:
+                elif 'month' in animal_data[Attr.AgeuponOutcome.value]:
                     day_multiplier = 30
-                elif 'weeks' or 'week' in animal_data[Attr.AgeuponOutcome.value]:
+                elif 'week' in animal_data[Attr.AgeuponOutcome.value]:
                     day_multiplier = 7
-                elif 'day' or 'days' in animal_data[Attr.AgeuponOutcome.value]:
-                    day_multiplier = 7
-                animal_data[Attr.AgeuponOutcome.value] = int(animal_data[Attr.AgeuponOutcome.value][0]) * day_multiplier
+                elif 'day' in animal_data[Attr.AgeuponOutcome.value]:
+                    day_multiplier = 1
+                total_dias = int(animal_data[Attr.AgeuponOutcome.value][0]) * day_multiplier
+                animal_data[Attr.AgeuponOutcome.value] = total_dias / 30
         print('Done: discretize_ageuponoutcom')
 
     """
-    Method to discretize and normalize dog breed's names. It consists in finding and editing breeds' names with "Mix" and "/" by their first name.
+    Método utilizado para discretizar e analisar raças de animais.
     """
     def discretize_breed_names(self):
         for animal_data in self.data:
             if animal_data[Attr.AnimalType.value] == 'Dog':
                 self.dog_breeds.add(animal_data[Attr.Breed.value])
+            elif animal_data[Attr.AnimalType.value] == 'Cat':
+                self.cat_breeds.add(animal_data[Attr.Breed.value])
+            else:
+                print(animal_data[Attr.Breed.value])
 
-        print(len(self.dog_breeds))
-        for breed_animal in sorted(self.dog_breeds):
+        for animal_data in self.data:
+            breed_animal = animal_data[Attr.Breed.value]
             string_match = breed_animal.find('/')
             string_match_2 = breed_animal.find(' Mix')
-            if string_match != -1:
-                self.dog_breeds.add(breed_animal[:string_match])
-                print(breed_animal[:string_match])
-                self.dog_breeds.discard(breed_animal) 
-                print(breed_animal)
+            string_match_3 = breed_animal.find('Hound')
+            if 'Black/Tan Hound Mix' in breed_animal:
+                animal_data[Attr.Breed.value] = 'Black and Tan Coonhound'
+            elif string_match != -1:
+                animal_data[Attr.Breed.value] = breed_animal[:string_match]
             elif string_match_2 != -1:
-                self.dog_breeds.add(breed_animal[:string_match_2])
-                self.dog_breeds.discard(breed_animal)
+                animal_data[Attr.Breed.value] = breed_animal[:string_match_2]
 
-        print(len(self.dog_breeds))
-        input()
-    
+            # Normalizando alguns nomes
+            if animal_data[Attr.Breed.value] == 'Redbone Hound':
+                animal_data[Attr.Breed.value] = 'Redbone Coonhound'
+
+            if animal_data[Attr.Breed.value] == 'Bluetick Hound':
+                animal_data[Attr.Breed.value] = 'Bluetick Coonhound'
+
+            if animal_data[Attr.Breed.value] == 'American Pit Bull Terrier':
+                animal_data[Attr.Breed.value] = 'Pit Bull'
+
+            if animal_data[Attr.Breed.value] == 'Javanese':
+                animal_data[Attr.Breed.value] = 'Japanese'
+
+            if 'St. Bernard' in animal_data[Attr.Breed.value]:
+                animal_data[Attr.Breed.value] = 'St. Bernard'
+
+            if animal_data[Attr.Breed.value] == 'Queensland Heeler':
+                animal_data[Attr.Breed.value] = 'Australian Cattle Dog'
+
+            if animal_data[Attr.Breed.value] == 'Unknown':
+                print(animal_data)
+                input()
+
+        print('Done: discretize_breed_names')
+
     """
-    Method to write self.data in new csv file
+    Método utilizado para discretizar o atributo Size
     """
-    def write_csv_file(self):
-        self._discretize_empty_values()
-        with open(self.new_csv, 'wt') as outcsv:
-            writer = csv.DictWriter(outcsv, fieldnames = [Attr.OutcomeType.value, Attr.OutcomeSubtype.value, Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value, 
+    def discretize_size(self):
+        for animal_data in self.data:
+            if 'Small' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 1
+            elif 'Small to Medium' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 2
+            elif 'Medium' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 3
+            elif 'Medium to Large' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 4
+            elif 'Large' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 5
+            elif 'Large to Giant' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 6
+            elif 'Giant' == animal_data[Attr.AgeuponOutcome.value]:
+                value = 7
+            else:
+                print(animal_data[Attr.AgeuponOutcome.value])
+                input()
+            animal_data[Attr.AgeuponOutcome.value] = value
+        print('Done: discretize_size')
+
+    """
+    Método utilizado para gerar intervalos dos atributos AgeuponOutcome e Lifespan
+    """
+    def create_intervals(self):
+         age_values = [animal[Attr.AgeuponOutcome.value] for animal in self.data]
+         print(set(age_values))
+         age_min_value = min(age_values)
+         age_max_value = max(age_values)
+         for animal in self.data:
+             print(animal)
+             lifespan_values = animal[Attr.Lifespan.value]
+             # lifespan_values = [animal[Attr.Lifespan.value] for animal in self.data]
+             # input()
+         # lifespan_min_value = min(lifespan_values)
+         # lifespan_max_value = max(lifespan_values)
+         #print(set(lifespan_values))
+         input()
+
+         for x in self.data:
+             if x[Attr.AgeuponOutcome.value] >= min_value and x[Attr.AgeuponOutcome.value] < max_value / 4:
+                 value = ''
+             elif x[Attr.AgeuponOutcome.value] >= max_value / 4 and x[Attr.AgeuponOutcome.value] < max_value / 2:
+                 value = ''
+             elif x[Attr.AgeuponOutcome.value] >= max_value / 2 and x[Attr.AgeuponOutcome.value] < max_value - (max_value / 4):
+                 value = ''
+             elif x[Attr.AgeuponOutcome.value] >= max_value - (max_value / 4):
+                 value = ''
+             x[Attr.AgeuponOutcome.value] = ''
+
+         for x in self.data:
+             if x[Attr.Lifespan.value] >= min_value and x[Attr.Lifespan.value] < max_value / 4:
+                 value = ''
+             elif x[Attr.Lifespan.value] >= max_value / 4 and x[Attr.Lifespan.value] < max_value / 2:
+                 value = ''
+             elif x[Attr.Lifespan.value] >= max_value / 2 and x[Attr.Lifespan.value] < max_value - (max_value / 4):
+                 value = ''
+             elif x[Attr.Lifespan.value] >= max_value - (max_value / 4):
+                 value = ''
+             x[Attr.Lifespan.value] = ''
+         input()
+
+    """
+    Método para escrever o que estiver em self.data em um CSV
+    """
+    def write_csv_file(self, csv_file):
+        with open(csv_file, 'wt') as outcsv:
+            writer = csv.DictWriter(outcsv, fieldnames = [Attr.OutcomeType.value, Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value,
                                                           Attr.Breed.value, Attr.Color.value, Attr.Lifespan.value, Attr.Adaptability.value, Attr.Size.value])
             writer.writeheader()
             writer.writerows(self.data)
         print('Done: write_csv_file')
 
+    def populate_breed_from_csv(self):
+        with open('csv_files/breed_info.csv', 'rt') as csvfile:
+            dictofdata = csv.DictReader(csvfile, delimiter=',')
+            self.breed_info = [{Attr.AnimalType.value: row[Attr.AnimalType.value], Attr.Breed.value: row[Attr.Breed.value], Attr.Lifespan.value: row[Attr.Lifespan.value],
+                          Attr.Size.value: row[Attr.Size.value], Attr.Adaptability.value: row[Attr.Adaptability.value]} for row in dictofdata]
+    print('Done: populate_breed_from_csv')
+
+    def merge_breed_with_tuples(self):
+        for animal in self.data:
+            for breeddata in self.breed_info:
+                if animal[Attr.Breed.value] == breeddata[Attr.Breed.value]:
+                    animal[Attr.Lifespan.value] = int(breeddata[Attr.Lifespan.value]) / 30
+                    animal[Attr.Size.value] = breeddata[Attr.Size.value]
+                    animal[Attr.Adaptability.value] = breeddata[Attr.Adaptability.value]
+        print('Done: merge_breed_with_tuples')
+
 
 if __name__ == '__main__':
-    csv_disc = CSVDiscretizer('train.csv', 'teste_1.csv')
+    csv_disc = CSVDiscretizer('train.csv', 'discret_train.csv')
+    # csv_disc.write_csv_file(csv_disc.new_csv)
+    print('Done: final')
 

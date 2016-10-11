@@ -1,0 +1,221 @@
+AnimalType,Breed,Lifespan,Adaptability,Size
+Dog,Shetland Sheepdog,5110,5,Medium
+Dog,Pit Bull,5475,3,Large
+Dog,Lhasa Apso,5475,5,Small
+Dog,Cairn Terrier,5475,3,Small
+Dog,American Pit Bull Terrier,,,
+Dog,Miniature Schnauzer,5475,5,Small
+Dog,Yorkshire Terrier,5840,5,Small
+Dog,Great Pyrenees,4380,4,Giant
+Dog,Flat Coat Retriever,4745,5,Medium to Large
+Dog,Queensland Heeler,5475,3,Medium
+Dog,Plott Hound,5110,3,Medium
+Dog,German Shepherd,4380,5,Medium to Large
+Dog,American Staffordshire Terrier,5110,3,Medium
+Dog,Chihuahua Shorthair,6570,5,Small
+Dog,Labrador Retriever,4745,5,Medium
+Dog,Collie Smooth,5475,4,Large
+Dog,Beagle,5475,5,Small
+Dog,Blue Lacy,5475,4,Medium to Large
+Dog,Black Mouth Cur,5840,4,Medium to Large
+Dog,Dachshund,5110,5,Small
+Dog,Maltese,6570,5,Small
+Dog,Pointer,5475,5,Medium
+Dog,English Foxhound,4745,4,Large
+Dog,Vizsla,5110,5,Medium
+Dog,Cardigan Welsh Corgi,5110,5,Medium
+Dog,Chow Chow,5110,2,Medium
+Dog,Boxer,4380,4,Medium
+Dog,Border Collie,5475,5,Medium
+Dog,Border Terrier,5475,5,Small
+Dog,Dogo Argentino,4380,3,Large
+Dog,Tibetan Terrier,5475,5,Medium
+Dog,Miniature Pinscher,5475,5,Small
+Dog,Rat Terrier,6570,5,Small
+Dog,Dachshund Longhair,5110,5,Small
+Dog,Siberian Husky,5110,5,Medium
+Dog,Australian Cattle Dog,5475,3,Medium
+Dog,Catahoula,5110,3,Large
+Dog,Miniature Poodle,4745,5,Small
+Dog,Jack Russell Terrier,5840,5,Small
+Dog,Doberman Pinsch,4380,5,Medium
+Dog,Whippet,5475,5,Medium
+Dog,Australian Shepherd,5475,5,Medium
+Dog,English Pointer,5475,5,Medium
+Dog,Great Dane,2920,3,Giant
+Dog,Chesa Bay Retr,4745,3,Large
+Dog,Basset Hound,5475,5,Medium
+Dog,Airedale Terrier,4745,5,Medium
+Dog,Cocker Spaniel,5110,5,Medium
+Dog,Chihuahua Longhair,6570,5,Small
+Dog,Rottweiler,365,3,Medium to Large
+Dog,Shih Tzu,5110,5,Small
+Dog,Anatol Shepherd,5110,2,Large
+Dog,Chinese Sharpei,3650,3,Medium
+Dog,Akita,4380,5,Large
+Dog,American Bulldog,5475,3,Large
+Dog,Bernese Mountain Dog,3285,3,Large
+Dog,English Bulldog,4380,3,Small
+Dog,Dachshund Wirehair,5110,5,Small
+Dog,Black and Tan Coonhound,4380,5,Large
+Dog,Norfolk Terrier,5475,5,Small
+Dog,Scottish Terrier,4745,3,Small
+Dog,Treeing Walker Coonhound,4745,3,Medium
+Dog,Rhod Ridgeback,4380,4,Large
+Dog,Harrier,4380,3,Medium
+Dog,Australian Kelpie,5110,5,Large
+Dog,Mexican Hairless,7300,3,Giant
+Dog,Redbone Coonhound,5110,5,Medium
+Dog,Afghan Hound,5110,5,large
+Dog,Swedish Vallhund,5110,5,Medium
+Dog,Papillon,5840,5,Small
+Dog,West Highland,5840,4,Small
+Dog,Shiba Inu,5475,4,Medium
+Dog,Beauceron,4380,3,Large
+Dog,Pekingese,5475,5,Small
+Dog,Schipperke,5475,5,Small
+Dog,Collie Rough,5110,4,Medium
+Dog,Staffordshire,5110,3,Medium
+Dog,Silky Terrier,5110,3,Small
+Dog,Bruss Griffon,5475,4,Small
+Dog,Pug,5475,5,Small
+Dog,Boerboel,4380,3,Large
+Dog,Golden Retriever,4745,5,Medium to Large
+Dog,Bichon Frise,5475,5,Small
+Dog,Manchester Terrier,5840,5,Small
+Dog,English Setter,4380,3,Large
+Dog,Pomeranian,5475,5,Small
+Dog,Greater Swiss Mountain Dog,4380,3,Large
+Dog,Bull Terrier,4380,4,Medium
+Dog,Pembroke Welsh Corgi,5110,5,Small
+Dog,Toy Poodle,5475,4,Small
+Dog,Bullmastiff,3650,3,Large
+Dog,Smooth Fox Terrier,5110,5,Small
+Dog,Old English Bulldog,5110,4,Medium
+Dog,Ibizan Hound,5110,4,Large
+Dog,Boston Terrier,5475,5,Small
+Dog,Brittany,4745,3,Medium
+Dog,Newfoundland,730,4,Large to Giant
+Dog,Parson Russell Terrier,5475,5,Medium
+Dog,Carolina Dog,5475,4,Medium to Large
+Dog,Mastiff,3650,2,Giant
+Dog,St. Bernard,3650,4,Giant
+Dog,German Shorthair Pointer,5110,4,Medium to Large
+Dog,Basenji,4380,2,Medium
+Dog,Bloodhound,3650,3,Large
+Dog,Affenpinscher,5110,5,Small
+Dog,Norwich Terrier,5475,5,Small
+Dog,Greyhound,4745,5,Giant
+Dog,Boykin Span,5840,5,Medium
+Dog,Weimaraner,4380,5,Medium to Large
+Dog,Skye Terrier,5110,5,Medium
+Dog,Schnauzer Giant,3650,3,Giant
+Dog,Alaskan Husky,6935,5,Large
+Dog,Belgian Malinois,5110,5,Medium to Large
+Dog,American Eskimo,5110,5,Small to Medium
+Dog,Italian Greyhound,5475,5,Small
+Dog,Irish Wolfhound,3650,4,Giant
+Dog,Wire Hair Fox Terrier,5475,3,Small
+Dog,Landseer,4015,4,Giant
+Dog,St. Bernard Smooth Coat,3650,4,Giant
+Dog,Standard Schnauzer,5475,3,Medium
+Dog,English Springer Spaniel,5110,5,Medium
+Dog,Alaskan Malamute,4380,3,Large
+Dog,French Bulldog,4015,5,Small
+Dog,Cavalier Span,4380,5,Small
+Dog,Soft Coated Wheaten Terrier,5475,5,Medium
+Dog,Kuvasz,4380,3,Giant
+Dog,American Foxhound,4380,5,Large
+Dog,Podengo Pequeno,5110,3,Small
+Dog,Leonberger,3650,3,Giant
+Dog,English Shepherd,4745,5,Medium
+Dog,Standard Poodle,4745,5,Medium
+Dog,Dutch Shepherd,4745,,Large
+Dog,Dalmatian,5110,5,Large
+Dog,English Coonhound,4380,4,Large
+Dog,Old English Sheepdog,4380,3,Large
+Dog,Jindo,4745,3,Medium
+Dog,Welsh Terrier,5110,5,Small
+Dog,Finnish Spitz,5475,3,Medium
+Dog,Field Spaniel,4380,5,Medium
+Dog,Keeshond,5110,5,Medium
+Dog,Irish Setter,5110,5,Large
+Dog,Picardy Sheepdog,5110,5,Medium
+Dog,Patterdale Terr,5840,4,Small
+Dog,German Wirehaired Pointer,5110,5,Medium
+Dog,Havanese,5475,5,Small
+Dog,Black,4015,3,Large to Giant
+Dog,Bulldog,3650,5,Medium
+Dog,Pharaoh Hound,5110,5,Medium
+Dog,Bearded Collie,5110,5,Medium
+Dog,Toy Fox Terrier,5110,5,Small
+Dog,Canaan Dog,5110,5,Medium
+Dog,Irish Terrier,5475,5,Medium
+Dog,Treeing Tennesse Brindle,4015,5,Medium to Large
+Dog,Tibetan Spaniel,5475,5,Small
+Dog,Cane Corso,4015,2,Large
+Dog,Pbgv,5110,3,Medium
+Dog,Glen Of Imaal,5110,5,Medium
+Dog,Australian Terrier,5475,5,Giant
+Dog,Presa Canario,4015,2,Giant
+Dog,Chinese Crested,5110,3,Small
+Dog,Neapolitan Mastiff,3650,2,Large to Giant
+Dog,Bedlington Terr,5840,4,Medium
+Dog,Nova Scotia Duck Tolling Retriever,5110,5,Medium
+Dog,Wirehaired Pointing Griffon,5110,3,Medium
+Dog,Feist,5475,5,Small
+Dog,Belgian Sheepdog,4015,4,Medium
+Dog,Samoyed,5110,4,Medium
+Dog,Otterhound,4380,3,Large
+Dog,Welsh Springer Spaniel,5475,5,Medium
+Dog,Entlebucher,5475,3,Medium
+Dog,Bull Terrier Miniature,5110,3,Small
+Dog,Dogue De Bordeaux,4015,3,Large
+Dog,Bluetick Coonhound,4380,5,Large
+Dog,Sealyham Terr,5840,5,Small
+Dog,Japanese Chin,5110,5,Small
+Dog,Saluki,5110,5,Large
+Dog,Hovawart,5110,5,Medium to Large
+Dog,Norwegian Elkhound,4380,5,Medium
+Dog,German Pinscher,5475,3,Medium
+Dog,Port Water Dog,5110,5,Medium
+Dog,Treeing Cur,5840,5,Small to Medium
+Dog,Belgian Tervuren,4380,5,Medium
+Dog,Spanish Mastiff,3650,5,Largest
+Dog,Lowchen,5475,5,Small
+Dog,Swiss Hound,4745,5,Medium to Large
+Dog,English Cocker Spaniel,5110,5,Medium
+Dog,Spinone Italiano,5110,3,Medium
+Cat,Domestic Shorthair,6205,5,Medium
+Cat,Angora,3650,3,Small to Medium
+Cat,Russian Blue,5840,3,Medium
+Cat,Domestic Longhair,6205,5,Medium
+Cat,Siamese,5475,5,Medium
+Cat,Domestic Medium Hair,6205,5,Medium
+Cat,Manx,5110,5,Medium to Large
+Cat,Exotic Shorthair,5475,5,Medium
+Cat,Devon Rex,5475,5,Medium
+Cat,Snowshoe,6935,5,Medium
+Cat,Maine Coon,5475,5,Largest
+Cat,Burmese,5840,5,Medium
+Cat,Bengal,5840,5,Medium to Large
+Cat,American Shorthair,6205,5,Medium to Large
+Cat,Himalayan,1825,5,Medium to Large
+Cat,Ragdoll,6205,5,Largest
+Cat,Bombay,5840,5,Medium
+Cat,Persian,5475,5,Medium to Large
+Cat,Cornish Rex,5110,5,Medium
+Cat,Balinese,5475,5,Medium
+Cat,Japanese,5840,5,Medium
+Cat,British Shorthair,6205,5,Largest
+Cat,Japanese Bobtail,5840,5,Medium
+Cat,Pixiebob Shorthair,5840,5,Medium to Large
+Cat,Tonkinese,5840,5,Medium
+Cat,Sphynx,5110,5,Medium
+Cat,Ocicat,5110,5,Medium to Large
+Cat,Abyssinian,5475,5,Medium
+Cat,Munchkin Longhair,5475,5,Small to Medium
+Cat,Turkish Van,6205,5,Medium to Large
+Cat,Norwegian Forest Cat,5840,5,Large
+Cat,Cymric,1460,5,Medium to Large
+Cat,Havana Brown,5475,5,Medium
