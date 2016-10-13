@@ -20,6 +20,7 @@ class CSVDiscretizer(object):
             self.discretize_breed_names()
             self.populate_breed_from_csv()
             self.merge_breed_with_tuples()
+            self.discretize_size()
             self.create_intervals()
 
     """
@@ -28,9 +29,14 @@ class CSVDiscretizer(object):
     def populate_data_from_csv(self, csv_file, should_return=False):
         with open(csv_file, 'rt') as csvfile:
             dictofdata = csv.DictReader(csvfile, delimiter=',')
-            self.data = [{Attr.OutcomeType.value: row[Attr.OutcomeType.value], Attr.AnimalType.value: row[Attr.AnimalType.value],
+            self.data = [{Attr.AnimalType.value: row[Attr.AnimalType.value],
                     Attr.SexuponOutcome.value: row[Attr.SexuponOutcome.value], Attr.AgeuponOutcome.value: row[Attr.AgeuponOutcome.value], Attr.Breed.value: row[Attr.Breed.value],
                     Attr.Color.value: row[Attr.Color.value]} for row in dictofdata]
+# para o train.csv
+#self.data = [{Attr.OutcomeType.value: row[Attr.OutcomeType.value], Attr.AnimalType.value: row[Attr.AnimalType.value],
+#                    Attr.SexuponOutcome.value: row[Attr.SexuponOutcome.value], Attr.AgeuponOutcome.value: row[Attr.AgeuponOutcome.value], Attr.Breed.value: row[Attr.Breed.value],
+#                    Attr.Color.value: row[Attr.Color.value]} for row in dictofdata]
+
             print("Quantidade de tuplas importadas do {}: {}".format(csv_file, len(self.data)))
             if should_return:
                 return self.data
@@ -108,7 +114,7 @@ class CSVDiscretizer(object):
 
             if animal_data[Attr.Breed.value] == 'Queensland Heeler':
                 animal_data[Attr.Breed.value] = 'Australian Cattle Dog'
-            
+
             retirar_elementos = []
             if animal_data[Attr.Breed.value] == 'Unknown':
                 retirar_elementos.append(animal_data)
@@ -121,25 +127,30 @@ class CSVDiscretizer(object):
     Método utilizado para discretizar o atributo Size
     """
     def discretize_size(self):
+        value = None
         for animal_data in self.data:
-            if 'Small' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 1
-            elif 'Small to Medium' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 1 
-            elif 'Medium' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 2
-            elif 'Medium to Large' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 3
-            elif 'Large' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 4
-            elif 'Large to Giant' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 5 
-            elif 'Giant' == animal_data[Attr.AgeuponOutcome.value]:
-                value = 5
-            else:
-                print(animal_data[Attr.AgeuponOutcome.value])
-                input()
-            animal_data[Attr.AgeuponOutcome.value] = value
+            try:
+                if 'Small' == animal_data[Attr.Size.value]:
+                    value = 'Small'
+                elif 'Small to Medium' == animal_data[Attr.Size.value]:
+                    value = 'Small'
+                elif 'Medium' == animal_data[Attr.Size.value]:
+                    value = 'Medium'
+                elif 'Medium to Large' == animal_data[Attr.Size.value]:
+                    value = 'Medium'
+                elif 'Large' == animal_data[Attr.Size.value] or 'large' == animal_data[Attr.Size.value] or 'Largest' == animal_data[Attr.Size.value]:
+                    value = 'Large'
+                elif 'Large to Giant' == animal_data[Attr.Size.value]:
+                    value = 'Large'
+                elif 'Giant' == animal_data[Attr.Size.value]:
+                    value = 'Giant'
+                else:
+                    print(animal_data[Attr.Size.value])
+                    input()
+            except Exception as e:
+                print(animal_data)
+                pass
+            animal_data[Attr.Size.value] = value
         print('Done: discretize_size')
 
     """
@@ -152,7 +163,7 @@ class CSVDiscretizer(object):
          age_max_value = max(age_values)
          print('Min', age_min_value)
          print('Max', age_max_value)
-         print('Metade', age_max_value)
+         print('Metade', age_max_value / 2)
          print('1/4', age_max_value / 4)
          print('3/4', age_max_value - (age_max_value / 4))
          lifespan_values = []
@@ -163,10 +174,9 @@ class CSVDiscretizer(object):
          lifespan_max_value = max(lifespan_values)
          print('Min', lifespan_min_value)
          print('Max', lifespan_max_value)
-         print('Metade', lifespan_max_value)
+         print('Metade', lifespan_max_value / 2)
          print('1/4', lifespan_max_value / 4)
          print('3/4', lifespan_max_value - (lifespan_max_value / 4))
-         input()
 
          for x in self.data:
              if x[Attr.AgeuponOutcome.value] >= age_min_value and x[Attr.AgeuponOutcome.value] < age_max_value / 4:
@@ -195,8 +205,11 @@ class CSVDiscretizer(object):
     """
     def write_csv_file(self, csv_file):
         with open(csv_file, 'wt') as outcsv:
-            writer = csv.DictWriter(outcsv, fieldnames = [Attr.OutcomeType.value, Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value,
+            #writer = csv.DictWriter(outcsv, fieldnames = [Attr.OutcomeType.value, Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value,
+            #                                              Attr.Breed.value, Attr.Color.value, Attr.Lifespan.value, Attr.Adaptability.value, Attr.Size.value])
+            writer = csv.DictWriter(outcsv, fieldnames = [Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value,
                                                           Attr.Breed.value, Attr.Color.value, Attr.Lifespan.value, Attr.Adaptability.value, Attr.Size.value])
+
             writer.writeheader()
             writer.writerows(self.data)
         print('Done: write_csv_file')
@@ -219,7 +232,7 @@ class CSVDiscretizer(object):
 
 
 if __name__ == '__main__':
-    csv_disc = CSVDiscretizer('train.csv', 'discret_train.csv')
+    csv_disc = CSVDiscretizer('test.csv', 'discret_test.csv')
     csv_disc.write_csv_file(csv_disc.new_csv)
     print('Done: final')
 

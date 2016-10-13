@@ -1,5 +1,5 @@
 AnimalType,Breed,Lifespan,Adaptability,Size
-Dog,Shetland Sheepdog,5110,5,medium
+Dog,Shetland Sheepdog,5110,5,Medium
 Dog,Pit Bull,5475,3,Large
 Dog,Lhasa Apso,5475,5,Small
 Dog,Cairn Terrier,5475,3,Small
@@ -99,7 +99,7 @@ Dog,Newfoundland,730,4,Large to Giant
 Dog,Parson Russell Terrier,5475,5,Medium
 Dog,Carolina Dog,5475,4,Medium to Large
 Dog,Mastiff,3650,2,Giant
-Dog,St. Bernard Rough Coat,3650,4,Giant
+Dog,St. Bernard,3650,4,Giant
 Dog,German Shorthair Pointer,5110,4,Medium to Large
 Dog,Basenji,4380,2,Medium
 Dog,Bloodhound,3650,3,Large
@@ -219,3 +219,15 @@ Cat,Turkish Van,6205,5,Medium to Large
 Cat,Norwegian Forest Cat,5840,5,Large
 Cat,Cymric,1460,5,Medium to Large
 Cat,Havana Brown,5475,5,Medium
+Cat,Scottish Fold,4745,5,Medium
+Cat,American Wirehair,4745,5,Medium
+Cat,Munchkin Shorthair,5745,5,Small
+Dog,Coton De Tulear,5745,4,Small
+Dog,Dachsund Stan,5110,5,Small
+Dog,Dandie Dinmont,5110,5,Small
+Cat,Oriental Sh,5110,5,Medium
+Cat,Chartreux,5745,5,Medium to Large
+Dog,Eng Toy Spaniel,4380,5,Small
+Cat,Turkish Angora,6570,5,Medium
+Dog,Gordon Setter,4380,5,Large
+Dog,Dachshund Stan,5110,5,Small
