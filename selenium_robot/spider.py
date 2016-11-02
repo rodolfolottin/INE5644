@@ -1,9 +1,9 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import os
-from discretizer import CSVDiscretizer
+from discretize.discretize import CSVDiscretizer
 import time
-from attr import Attr
+from discretize.attr import Attr
 import csv
 
 driver = None

@@ -3,11 +3,11 @@ import time
 import sys
 from attr import Attr
 
-class CSVDiscretizer(object):
+class CSVDiscretize(object):
 
     def __init__(self, csv, new_csv, one_way=True):
-        self.original_csv = 'csv_files/' + csv
-        self.new_csv = 'csv_files/' + new_csv
+        self.original_csv = 'csv_discs/' + csv
+        self.new_csv = 'csv_discs/' + new_csv
         # A way to know how many different animal' species the csv has
         self.dog_breeds = set()
         self.cat_breeds = set()
@@ -26,8 +26,8 @@ class CSVDiscretizer(object):
     """
     Popula data de csv
     """
-    def populate_data_from_csv(self, csv_file, should_return=False):
-        with open(csv_file, 'rt') as csvfile:
+    def populate_data_from_csv(self, csv_disc, should_return=False):
+        with open(csv_disc, 'rt') as csvfile:
             dictofdata = csv.DictReader(csvfile, delimiter=',')
             self.data = [{Attr.AnimalType.value: row[Attr.AnimalType.value],
                     Attr.SexuponOutcome.value: row[Attr.SexuponOutcome.value], Attr.AgeuponOutcome.value: row[Attr.AgeuponOutcome.value], Attr.Breed.value: row[Attr.Breed.value],
@@ -37,7 +37,7 @@ class CSVDiscretizer(object):
 #                    Attr.SexuponOutcome.value: row[Attr.SexuponOutcome.value], Attr.AgeuponOutcome.value: row[Attr.AgeuponOutcome.value], Attr.Breed.value: row[Attr.Breed.value],
 #                    Attr.Color.value: row[Attr.Color.value]} for row in dictofdata]
 
-            print("Quantidade de tuplas importadas do {}: {}".format(csv_file, len(self.data)))
+            print("Quantidade de tuplas importadas do {}: {}".format(csv_disc, len(self.data)))
             if should_return:
                 return self.data
 
@@ -158,25 +158,14 @@ class CSVDiscretizer(object):
     """
     def create_intervals(self):
          age_values = [animal[Attr.AgeuponOutcome.value] for animal in self.data]
-         print('Age intervals')
          age_min_value = min(age_values)
          age_max_value = max(age_values)
-         print('Min', age_min_value)
-         print('Max', age_max_value)
-         print('Metade', age_max_value / 2)
-         print('1/4', age_max_value / 4)
-         print('3/4', age_max_value - (age_max_value / 4))
          lifespan_values = []
          for animal in self.data:
              if animal[Attr.Lifespan.value]:
                  lifespan_values.append(animal[Attr.Lifespan.value])
          lifespan_min_value = min(lifespan_values)
          lifespan_max_value = max(lifespan_values)
-         print('Min', lifespan_min_value)
-         print('Max', lifespan_max_value)
-         print('Metade', lifespan_max_value / 2)
-         print('1/4', lifespan_max_value / 4)
-         print('3/4', lifespan_max_value - (lifespan_max_value / 4))
 
          for x in self.data:
              if x[Attr.AgeuponOutcome.value] >= age_min_value and x[Attr.AgeuponOutcome.value] < age_max_value / 4:
@@ -203,8 +192,8 @@ class CSVDiscretizer(object):
     """
     Método para escrever o que estiver em self.data em um CSV
     """
-    def write_csv_file(self, csv_file):
-        with open(csv_file, 'wt') as outcsv:
+    def write_csv_disc(self, csv_disc):
+        with open(csv_disc, 'wt') as outcsv:
             #writer = csv.DictWriter(outcsv, fieldnames = [Attr.OutcomeType.value, Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value,
             #                                              Attr.Breed.value, Attr.Color.value, Attr.Lifespan.value, Attr.Adaptability.value, Attr.Size.value])
             writer = csv.DictWriter(outcsv, fieldnames = [Attr.AnimalType.value, Attr.SexuponOutcome.value, Attr.AgeuponOutcome.value,
@@ -212,10 +201,10 @@ class CSVDiscretizer(object):
 
             writer.writeheader()
             writer.writerows(self.data)
-        print('Done: write_csv_file')
+        print('Done: write_csv_disc')
 
     def populate_breed_from_csv(self):
-        with open('csv_files/breed_info.csv', 'rt') as csvfile:
+        with open('csv_discs/breed_info.csv', 'rt') as csvfile:
             dictofdata = csv.DictReader(csvfile, delimiter=',')
             self.breed_info = [{Attr.AnimalType.value: row[Attr.AnimalType.value], Attr.Breed.value: row[Attr.Breed.value], Attr.Lifespan.value: row[Attr.Lifespan.value],
                           Attr.Size.value: row[Attr.Size.value], Attr.Adaptability.value: row[Attr.Adaptability.value]} for row in dictofdata]
@@ -232,7 +221,7 @@ class CSVDiscretizer(object):
 
 
 if __name__ == '__main__':
-    csv_disc = CSVDiscretizer('test.csv', 'discret_test.csv')
-    csv_disc.write_csv_file(csv_disc.new_csv)
+    csv_disc = CSVDiscretize('test.csv', 'discret_test.csv')
+    csv_disc.write_csv_disc(csv_disc.new_csv)
     print('Done: final')
 
