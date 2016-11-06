@@ -35,10 +35,21 @@ class DataMiningSpider(scrapy.Spider):
                     yield scrapy.Request(next_page, callback=self.parse)
 
     def parse_animal_info(self, response):
-        # rascunho
-        # animal_info['Size'] = response.css('.content > table > tbody > tr > td').extract_first()
         animal_info = response.meta.get('animal_info')
+
+        trs_list = response.css('.table-01 > tbody > tr > td').extract()
+        self._parse_trs_list(trs_list)
+
         animal_info['Size'] = 'Teste'
         yield animal_info
 
+    def _parse_by_xpath(self, response):
+        # best way to remove first element from a list
+        'Adaptability': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[19]/td[2]/span/text()').extract_first()
+        'Apartment Friendly': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[20]/td[2]/span/text()').extract_first()
+        'Barking Tendencies': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[21]/td[2]/span[1]/text()').extract_first()
+        'Cat Friendly': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[22]/td[2]/span/text()').extract_first()
+        'Child Friendly': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[23]/td[2]/span[1]/text()').extract_first()
+        'Dog Friendly': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[24]/td[2]/span/text()').extract_first()
+        'Exercise Needs': response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[25]/td[2]/span/text()').extract_first()
 
