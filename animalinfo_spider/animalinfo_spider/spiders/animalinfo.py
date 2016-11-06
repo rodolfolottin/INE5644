@@ -9,10 +9,10 @@ class DataMiningSpider(scrapy.Spider):
     _base_dog_url = 'http://www.dogbreedslist.info/all-dog-breeds/'
     _base_cat_url = 'http://www.catbreedslist.com/all-cat-breeds/'
 
-    start_urls = (
+    start_urls = [
             'http://www.dogbreedslist.info/all-dog-breeds/',
-            # 'http://www.catbreedslist.com/all-cat-breeds/'
-    )
+            'http://www.catbreedslist.com/all-cat-breeds/'
+    ]
 
 
     """Response contém o html que foi recebido como resposta"""
@@ -37,12 +37,16 @@ class DataMiningSpider(scrapy.Spider):
 
     def parse_animal_info(self, response):
         animal_info = response.meta.get('animal_info')
-        self._build_info_by_xpath_1(response, animal_info)
+        # aqui fazer verificacoes de que tipo de DOM estamos falando
+        if not response.css('.content > .info-r'):
+            self._build_info_by_xpath_1(response, animal_info)
+        else:
+            self._build_info_by_xpath_2(response, animal_info)
+
         yield animal_info
 
     def _build_info_by_xpath_1(self, response, animal_info):
         # best way to remove first element from a list
-        print(response)
         try:
             animal_info['Size'] = response.css('body > div.main > div.main-r > div.content > table.table-01 > tbody > tr:nth-child(8) > td:nth-child(2) > a::text').extract_first()
             animal_info['Litter Size'] = response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[15]/td[2]/text()').extract_first()
@@ -63,7 +67,34 @@ class DataMiningSpider(scrapy.Spider):
             animal_info['Stranger Friendly'] = response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[31]/td[2]/span/text()').extract_first()
             animal_info['Trainability'] = response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[32]/td[2]/span[1]/text()').extract_first()
             animal_info['Watchdog Ability'] = response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[33]/td[2]/span/text()').extract_first()
+            animal_info['Other Names'] = response.xpath('/html/body/div[2]/div[2]/div[4]/table[1]/tbody/tr[5]/td[2]/text()').extract_first()
         except Exception as e:
             print(e)
             input()
+
+    def _build_info_by_xpath_2(self, response, animal_info):
+            try:
+                animal_info['Size'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[5]/td[2]/text()').extract_first()
+                animal_info['Litter Size'] = None
+                animal_info['Lifespan'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[7]/td[2]/text()').extract_first()
+                animal_info['Puppy Price'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[12]/td[2]/text()').extract_first()
+                animal_info['Adaptability'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[23]/td[2]/text()').extract_first()
+                animal_info['Apartment Friendly'] = None
+                animal_info['Barking Tendencies'] = None
+                animal_info['Cat Friendly'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[15]/td[2]/text()').extract_first()
+                animal_info['Child Friendly'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[14]/td[2]/div/div/text()').extract_first()
+                animal_info['Dog Friendly'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[16]/td[2]/text()').extract_first()
+                animal_info['Exercise Needs'] = None
+                animal_info['Grooming'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[16]/td[2]/text()').extract_first()
+                animal_info['Health Issues'] = None
+                animal_info['Intelligence'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[20]/td[2]/text()').extract_first()
+                animal_info['Playfulness'] = None
+                animal_info['Shedding Level'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[18]/td[2]/text()').extract_first()
+                animal_info['Stranger Friendly'] = None
+                animal_info['Trainability'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[17]/td[2]/text()').extract_first()
+                animal_info['Watchdog Ability'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[19]/td[2]/text()').extract_first()
+                animal_info['Other Names'] = response.xpath('/html/body/div[2]/div[2]/div[4]/div[2]/table/tbody/tr[19]/td[2]/text()').extract_first()
+            except Exception as e:
+                print(e)
+                input()
 
