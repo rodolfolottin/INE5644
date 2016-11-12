@@ -13,3 +13,6 @@ class Attr(Enum):
     Lifespan = 'Lifespan'
     Size = 'Size'
     Adaptability = 'Adaptability'
+
+    def __repr__(self):
+        return str(self.value)
