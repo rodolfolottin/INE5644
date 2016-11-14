@@ -17,3 +17,5 @@ Depois disso nao lembro muito bem o que ele tinha falado...
 Tentar ver o que que era na parte de clustering
 
 E tentar lembrar o que que era quanto a parte dos conjuntos de train/test
+
+Dividir gato e cachorro?? Vai dar um trabalho fodido, o documento vai ter que ter todas essas duas partes... Será que é uma? Mas to tendo informacoes diferentes para cada um deles. Aí vai ficar meio estranho construir os graficos e arrumar tudo isso...Se bem que la na ferramenta tenho a opção de selecionar qual que vou utilizar
