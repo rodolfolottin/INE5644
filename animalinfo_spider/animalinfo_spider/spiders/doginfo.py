@@ -2,16 +2,14 @@
 import scrapy
 
 
-class DataMiningSpider(scrapy.Spider):
+class DogMiningSpider(scrapy.Spider):
 
-    name = 'datamining'
+    name = 'dogmining'
 
     _base_dog_url = 'http://www.dogbreedslist.info/all-dog-breeds/'
-    _base_cat_url = 'http://www.catbreedslist.com/all-cat-breeds/'
 
     start_urls = [
-            'http://www.dogbreedslist.info/all-dog-breeds/',
-            'http://www.catbreedslist.com/all-cat-breeds/'
+            'http://www.dogbreedslist.info/all-dog-breeds/'
     ]
 
 
