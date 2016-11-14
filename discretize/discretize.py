@@ -131,27 +131,39 @@ class DataDiscretize(object):
     Método utilizado para deletar a ocorrência do texto 'stars. Lembrar que em columns tá específico para cachorros.'
     """
     def delete_stars_from_specific_columns(self):
+        # dog columns
         columns = [
                Attr.BarkingTendencies, Attr.HealthIssues, Attr.CatFriendly, Attr.ExerciseNeeds,
                Attr.Grooming, Attr.SheddingLevel, Attr.ChildFriendly, Attr.WatchdogAbility,
                Attr.DogFriendly, Attr.StrangerFriendly, Attr.Intelligence, Attr.Trainability,
                Attr.Adaptability, Attr.ApartmentFriendly, Attr.Playfulness
         ]
-
+        if self.filetype == 'Cat':
+            columns = [
+                Attr.Adaptability, Attr.AffectionLevel, Attr.Vocalization,
+                Attr.ChildFriendly, Attr.StrangerFriendly, Attr.DogFriendly,
+                Attr.SocialNeeds, Attr.EnergyLevel, Attr.HealthIssues,
+                Attr.Intelligence, Attr.Grooming, Attr.Shedding
+            ]
         for animal_data in self.data:
             for column in columns:
                 animal_data[column] = animal_data[column].replace('stars', '').strip()
         print('Done: {}'.format(self.delete_stars_from_specific_columns.__name__))
 
     """
-    @@@@@@@@ TODO
-    Dividir em menos e mais? Será que é uma boa?? TODO
+    Método utilizado para alterar o valor de PuppyPrice para a média dos valores que aparecem
     """
     def discretize_puppyprice_values(self):
+        eliminate_chars = ['Average', 'USD', '$']
         for animal_data in self.data:
-            string = animal_data[Attr.PuppyPrice].replace('$', '').strip()
-            string = string.replace('Average', '').strip()
-            string = string.replace('USD', '').strip()
+            string = animal_data[Attr.PuppyPrice]
+            for char in eliminate_chars:
+                string = string.replace(char, '').strip()
+            average = 0
+            values_list = string.split('-')
+            for value in values_list:
+                average += int(value.strip())
+            animal_data[Attr.PuppyPrice] = average / len(values_list)
         print('Done: {}'.format(self.delete_stars_from_specific_columns.__name__))
 
     """
@@ -165,6 +177,21 @@ class DataDiscretize(object):
             animal_data[Attr.SexSituationUponOutcome] = situation
             animal_data[SexuponOutcome].replace(situation, '').strip()
          print('Done: {}'.format(self.discretize_sexuponoutcome_values.__name__))
+
+    def discretize_littersize_values(self):
+        for animal_data in self.data:
+            string = animal_data[Attr.LitterSize]
+            if string.find('average') != -1:
+                animal_data[Attr.LitterSize] = string[-1]
+                continue
+            string = string.replace('puppies', '').strip()
+            string = string.replace('puppies', '').strip()
+            values_list = string.split('-')
+            average = 0
+            for value in values_list:
+                average += int(value.strip())
+            animal_data[Attr.LitterSize] = average
+         print('Done: {}'.format(self.discretize_littersize_values.__name__))
 
     """
     @@@@@@@@@ TODO
@@ -226,6 +253,13 @@ if __name__ == '__main__':
             Attr.DogFriendly, Attr.StrangerFriendly, Attr.Intelligence, Attr.Trainability,
             Attr.Breed_definition, Attr.Adaptability, Attr.Lifespan, Attr.ApartmentFriendly,
             Attr.Playfulness
+    ]
+    cat_animals_params = [
+                Attr.Adaptability, Attr.AffectionLevel, Attr.Vocalization, Attr.Size,
+                Attr.ChildFriendly, Attr.Lifespan, Attr.StrangerFriendly, Attr.DogFriendly,
+                Attr.MaxPounds, Attr.SocialNeeds, Attr.Breed, Attr.EnergyLevel, Attr.HealthIssues,
+                Attr.Hypoallergic, Attr.Intelligence, Attr.KittenPrice, Attr.Grooming, Attr.LapCat,
+                Attr.Shedding
     ]
     dog_csv = DataDiscretize('train.csv', 'dog_info.csv', 'Dog', dog_animals_params, dog_breed_params)
     # chamar todas funcoes
