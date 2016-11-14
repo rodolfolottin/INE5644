@@ -43,8 +43,8 @@ class Attr(Enum):
     SocialNeeds = 'Social Needs'
     EnergyLevel = 'Energy Level'
     KittenPrice = 'Kitten Price'
-    LapCatShedding = 'Lap Cat Shedding'
-
+    LapCat = 'Lap Cat'
+    Shedding = 'Shedding'
 
 
     def __repr__(self):
