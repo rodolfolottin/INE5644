@@ -37,6 +37,15 @@ class Attr(Enum):
     Playfulness = 'Playfulness'
     SexSituationUponOutcome = 'SexSituationUponOutcome'
 
+    AffectionLevel = 'Affection Level'
+    Vocalization = 'Vocalization'
+    MaxPounds = 'Max Pounds'
+    SocialNeeds = 'Social Needs'
+    EnergyLevel = 'Energy Level'
+    KittenPrice = 'Kitten Price'
+    LapCatShedding = 'Lap Cat Shedding'
+
+
 
     def __repr__(self):
         return str(self.value)
