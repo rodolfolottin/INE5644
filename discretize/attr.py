@@ -20,7 +20,7 @@ class Attr(Enum):
     PuppyPrice = 'Puppy Price'
     BarkingTendencies = 'Barking Tendencies'
     HealthIssues = 'Health Issues'
-    Hypoallergic = 'Hypoallergic'
+    Hypoallergenic = 'Hypoallergenic'
     LitterSize = 'Litter Size'
     CatFriendly = 'Cat Friendly'
     ExerciseNeeds = 'Exercise Needs'
@@ -46,6 +46,8 @@ class Attr(Enum):
     LapCat = 'Lap Cat'
     Shedding = 'Shedding'
 
+    def __str__(self):
+        return repr(self.value)
 
     def __repr__(self):
         return str(self.value)
