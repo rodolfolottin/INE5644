@@ -227,8 +227,15 @@ class DataDiscretize(object):
         for animal_data in self.animal_info:
             sexupon = animal_data[Attr.SexuponOutcome.value]
             situation = [situation for situation in situations if situation in sexupon].pop()
-            animal_data[Attr.SexSituationUponOutcome.value] = situation
-            animal_data[Attr.SexuponOutcome.value] = sexupon.replace(situation, '').strip()
+            num_situation = 0
+            if situation in ['Spayed', 'Neutered']:
+                num_situation = 1
+            animal_data[Attr.SexSituationUponOutcome.value] = num_situation
+            sex = sexupon.replace(situation, '').strip()
+            sex = 0
+            if sex == 'Female':
+                sex = 1
+            animal_data[Attr.SexuponOutcome.value] = sex
         print('Done: {}'.format(self.discretize_sexuponoutcome_values.__name__))
 
     """
