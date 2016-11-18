@@ -15,9 +15,10 @@ class Attr(Enum):
     LifespanInterval = 'Lifespan Interval'
     Size = 'Size'
     Adaptability = 'Adaptability'
-    Breed_definition = 'Breed_definition'
-    ColorMix = 'Color Mix'
+    Breed_definition = 'isPurebred'
+    ColorMix = 'isColorMix'
     PuppyPrice = 'Puppy Price'
+    PuppyPriceInterval = 'Puppy Price Interval'
     BarkingTendencies = 'Barking Tendencies'
     HealthIssues = 'Health Issues'
     Hypoallergenic = 'Hypoallergenic'
@@ -35,8 +36,7 @@ class Attr(Enum):
     Trainability = 'Trainability'
     ApartmentFriendly = 'Apartment Friendly'
     Playfulness = 'Playfulness'
-    SexSituationUponOutcome = 'SexSituationUponOutcome'
-
+    SexSituationUponOutcome = 'isIntact'
     AffectionLevel = 'Affection Level'
     Vocalization = 'Vocalization'
     MaxPounds = 'Max Pounds'
@@ -45,6 +45,7 @@ class Attr(Enum):
     KittenPrice = 'Kitten Price'
     LapCat = 'Lap Cat'
     Shedding = 'Shedding'
+
 
     def __str__(self):
         return repr(self.value)

@@ -7,23 +7,25 @@ from attr import Attr
 
 class DataDiscretize(object):
 
-    def __init__(self, animal_info_csv, breed_info_csv, filetype, params, breed_params, should_exec=False):
-        self.animal_info = [animal_data for animal_data in CSV(animal_info_csv, params, True).csv_data if animal_data[Attr.AnimalType.value] == filetype]
-        self.breed_info = [animal for animal in CSV(breed_info_csv, breed_params, True).csv_data]
+    def __init__(self, animal_info_csv, breed_info_csv, params, breed_params, should_exec=False):
+        self.animal_info = CSV(animal_info_csv, params, True).csv_data
+        self.breed_info = CSV(breed_info_csv, breed_params, True).csv_data
         self.dog_breeds = set()
         self.cat_breeds = set()
-        self.filetype = filetype
         if should_exec:
             self._discretize_empty_values()
             self.discretize_breed_names()
             self.discretize_ageuponoutcom()
             self.merge_breed_with_tuples()
             self.discretize_size_values()
-            self.discretize_littersize_values()
+            # self.discretize_littersize_values()
             self.discretize_puppyprice_values()
             self.discretize_sexuponoutcome_values()
+            self.discretize_lifespan_values()
             self.analyze_discretize_color_names()
             self.delete_stars_from_specific_columns()
+            self.create_intervals()
+            self.discretize_breed_hypoallergenic_definition()
 
     """
     Método para retirar elementos que não tenham todos valores preenchidos.
@@ -60,6 +62,18 @@ class DataDiscretize(object):
     Método utilizado para discretizar e analisar raças de animais.
     """
     def discretize_breed_names(self):
+        animals_replace_names = {
+                    'Domestic Longhair': 'Domestic',
+                    'Domestic Shorthair': 'Domestic',
+                    'Domestic Medium Hair': 'Domestic',
+                    'Munchkin Shorthair': 'Munchkin'
+            }
+
+        for animal in self.breed_info:
+            for replace, real in animals_replace_names.items():
+                if replace in animal[Attr.Breed.value]:
+                    animal[Attr.Breed.value] = real
+
         for animal_data in self.animal_info:
             if animal_data[Attr.AnimalType.value] == 'Dog':
                 self.dog_breeds.add(animal_data[Attr.Breed.value])
@@ -71,6 +85,8 @@ class DataDiscretize(object):
             breed_animal = animal_data[Attr.Breed.value]
             string_match = breed_animal.find('/')
             string_match_2 = breed_animal.find(' Mix')
+
+            animal_data[Attr.Breed_definition.value] = 'Purebred'
 
             if 'Black/Tan Hound Mix' in breed_animal:
                 animal_data[Attr.Breed.value] = 'Black and Tan Coonhound'
@@ -130,7 +146,19 @@ class DataDiscretize(object):
                     'Black': 'Black and Tan Coonhound',
                     'Port Water Dog': 'Portuguese Water Dog',
                     'Sealyham Terr': 'Sealyham Terrier',
-                    'Bull Terrier Miniature': 'Miniature Bull Terrier'
+                    'Bull Terrier Miniature': 'Miniature Bull Terrier',
+                    'Domestic Longhair': 'Domestic',
+                    'Domestic Shorthair': 'Domestic',
+                    'Domestic Medium Hair': 'Domestic',
+                    'Pixiebob Shorthair': 'Pixiebob',
+                    'Turkish Angora': 'Angora',
+                    'Eng Toy Spaniel': 'English Toy Spaniel',
+                    'Munchkin Shorthair': 'Munchkin',
+                    'Munchkin Longhair': 'Munchkin',
+                    'Dachshund Stan': 'Dachshund',
+                    'Dandie Dinmont': 'Dandie Dinmont Terrier',
+
+
             }
 
             for replace, real in animals_replace_names.items():
@@ -144,39 +172,41 @@ class DataDiscretize(object):
     """
     def analyze_discretize_color_names(self):
         for animal_data in self.animal_info:
-            animal_data[Attr.ColorMix.value] = 'No'
+            animal_data[Attr.ColorMix.value] = 0
+            if animal_data[Attr.Color.value] in ['Bicolor', 'Tricolor']:
+                animal_data[Attr.ColorMix.value] = 1
             match = animal_data[Attr.Color.value].find('/')
             if match != -1:
                 animal_data[Attr.Color.value] = animal_data[Attr.Color.value][:match]
-                animal_data[Attr.ColorMix.value] = 'Yes'
+                animal_data[Attr.ColorMix.value] = 1
+            match = animal_data[Attr.Color.value].find(' ')
+            if match != -1:
+                animal_data[Attr.Color.value] = animal_data[Attr.Color.value][:match]
+                animal_data[Attr.ColorMix.value] = 1
         print('Done: {}'.format(self.analyze_discretize_color_names.__name__))
 
     """
     Método utilizado para discretizar o atributo Size
     """
     def discretize_size_values(self):
+        cat_set = set()
         value = None
         for animal_data in self.animal_info:
             try:
                 if animal_data[Attr.Size.value] in ['Small', 'small']:
                     value = 1 # 'Small'
-                elif animal_data[Attr.Size.value] in ['Small to Medium']:
-                    value = 2 #'Small'
-                elif animal_data[Attr.Size.value] in ['Medium', 'medium', 'Medium dog breeds']:
-                    value = 3 #'Medium'
-                elif animal_data[Attr.Size.value] in ['Medium to Large']:
-                    value = 4 #'Medium'
-                elif animal_data[Attr.Size.value] in ['large', 'Largest', 'Large sized', 'Large']:
-                    value = 5 #'Large'
-                elif animal_data[Attr.Size.value] in ['Large to Giant']:
-                    value = 6 #'Large'
-                elif animal_data[Attr.Size.value] in ['Giant']:
-                    value = 7 #'Giant'
+                elif animal_data[Attr.Size.value] in ['Medium', 'medium', 'Medium dog breeds', 'Small to Medium']:
+                    value = 2 #'Medium'
+                elif animal_data[Attr.Size.value] in ['Medium to Large', 'large', 'Largest', 'Large sized', 'Large']:
+                    value = 3 #'Large'
+                elif animal_data[Attr.Size.value] in ['Large to Giant', 'Giant']:
+                    value = 4 #'Large'
                 else:
                     print(animal_data[Attr.Size.value])
                     input()
             except Exception as e:
                 print(animal_data)
+                input()
             animal_data[Attr.Size.value] = value
         print('Done: {}'.format(self.discretize_size_values.__name__))
 
@@ -186,18 +216,10 @@ class DataDiscretize(object):
     def delete_stars_from_specific_columns(self):
         # dog columns
         columns = [
-               Attr.BarkingTendencies, Attr.HealthIssues, Attr.CatFriendly, Attr.ExerciseNeeds,
-               Attr.Grooming, Attr.SheddingLevel, Attr.ChildFriendly, Attr.WatchdogAbility,
-               Attr.DogFriendly, Attr.StrangerFriendly, Attr.Intelligence, Attr.Trainability,
-               Attr.Adaptability, Attr.ApartmentFriendly, Attr.Playfulness
+               Attr.Vocalization, Attr.HealthIssues, Attr.Grooming, Attr.SheddingLevel,
+               Attr.ChildFriendly, Attr.DogFriendly, Attr.StrangerFriendly, Attr.Intelligence,
+               Attr.Adaptability
         ]
-        if self.filetype == 'Cat':
-            columns = [
-                Attr.Adaptability, Attr.AffectionLevel, Attr.Vocalization,
-                Attr.ChildFriendly, Attr.StrangerFriendly, Attr.DogFriendly,
-                Attr.SocialNeeds, Attr.EnergyLevel, Attr.HealthIssues,
-                Attr.Intelligence, Attr.Grooming, Attr.Shedding
-            ]
         for animal_data in self.animal_info:
             for column in columns:
                 animal_data[column.value] = animal_data[column.value].replace('stars', '').strip()
@@ -220,6 +242,37 @@ class DataDiscretize(object):
         print('Done: {}'.format(self.delete_stars_from_specific_columns.__name__))
 
     """
+    Método utilizado para alterar os valores de Breed_definition
+    """
+    def discretize_breed_hypoallergenic_definition(self):
+        for animal_data in self.animal_info:
+            is_purebreed = 1
+            if animal_data[Attr.Breed_definition.value] in ['Crossbreed', 'CrossBreed', 'Cross Breed', 'Cross breed']:
+                is_purebreed = 0
+            is_hypoallergenic = 1
+            if animal_data[Attr.Hypoallergenic.value] == 'No':
+                is_hypoallergenic = 0
+            animal_data[Attr.Breed_definition.value] = is_purebreed
+            animal_data[Attr.Hypoallergenic.value] = is_hypoallergenic
+        print('Done: {}'.format(self.discretize_breed_hypoallergenic_definition.__name__))
+
+    """
+    Método utilizado para alterar o valor de Lifespan
+    """
+    def discretize_lifespan_values(self):
+        eliminate_chars = ['years']
+        for animal_data in self.animal_info:
+            string = animal_data[Attr.Lifespan.value]
+            for char in eliminate_chars:
+                string = string.replace(char, '').strip()
+            try:
+                animal_data[Attr.Lifespan.value] = int(string.split('-')[-1]) * 365
+            except:
+                print(animal_data)
+                input()
+        print('Done: {}'.format(self.delete_stars_from_specific_columns.__name__))
+
+    """
     Método utilizado para analisar e discretizar sexuponoutcome e gerar sexsituationuponoutcome
     """
     def discretize_sexuponoutcome_values(self):
@@ -227,15 +280,15 @@ class DataDiscretize(object):
         for animal_data in self.animal_info:
             sexupon = animal_data[Attr.SexuponOutcome.value]
             situation = [situation for situation in situations if situation in sexupon].pop()
-            num_situation = 0
+            num_situation = 1
             if situation in ['Spayed', 'Neutered']:
-                num_situation = 1
+                num_situation = 0
             animal_data[Attr.SexSituationUponOutcome.value] = num_situation
             sex = sexupon.replace(situation, '').strip()
-            sex = 0
+            num_sex = 0
             if sex == 'Female':
-                sex = 1
-            animal_data[Attr.SexuponOutcome.value] = sex
+                num_sex = 1
+            animal_data[Attr.SexuponOutcome.value] = num_sex
         print('Done: {}'.format(self.discretize_sexuponoutcome_values.__name__))
 
     """
@@ -257,40 +310,102 @@ class DataDiscretize(object):
         print('Done: {}'.format(self.discretize_littersize_values.__name__))
 
     """
-    @@@@@@@@@ TODO
     Método utilizado para gerar intervalos dos atributos AgeuponOutcome e Lifespan.
-    Esses intervalos devem ser melhorados
     """
     def create_intervals(self):
-         age_values = [animal[Attr.AgeuponOutcome.value] for animal in self.animal_info]
-         age_min_value = min(age_values)
-         age_max_value = max(age_values)
+        age_values = [animal[Attr.AgeuponOutcome.value] for animal in self.animal_info]
+        age_min_value = min(age_values)
+        age_max_value = max(age_values)
 
-         lifespan_values = [animal[Attr.Lifespan.value] for animal in self.animal_info]
-         lifespan_min_value = min(lifespan_values)
-         lifespan_max_value = max(lifespan_values)
+        lifespan_values = [animal[Attr.Lifespan.value] for animal in self.animal_info]
+        lifespan_min_value = min(lifespan_values)
+        lifespan_max_value = max(lifespan_values)
 
-         for x in self.animal_info:
-             if x[Attr.AgeuponOutcome.value] >= age_min_value and x[Attr.AgeuponOutcome.value] < age_max_value / 4:
-                 value = '1'
-             elif x[Attr.AgeuponOutcome.value] >= age_max_value / 4 and x[Attr.AgeuponOutcome.value] < age_max_value / 2:
-                 value = '2'
-             elif x[Attr.AgeuponOutcome.value] >= age_max_value / 2 and x[Attr.AgeuponOutcome.value] < age_max_value - (age_max_value / 4):
-                 value = '3'
-             elif x[Attr.AgeuponOutcome.value] >= age_max_value - (age_max_value / 4):
-                 value = '4'
-             x[Attr.AgeuponOutcomeInterval.value] = value
+        puppyprice_values = [animal[Attr.PuppyPrice.value] for animal in self.animal_info]
+        puppyprice_min_value = min(puppyprice_values)
+        puppyprice_max_value = max(puppyprice_values)
 
-         for x in self.animal_info:
-             if x[Attr.Lifespan.value] >= lifespan_min_value and x[Attr.Lifespan.value] < lifespan_max_value / 4:
-                 value = '1'
-             elif x[Attr.Lifespan.value] >= lifespan_max_value / 4 and x[Attr.Lifespan.value] < lifespan_max_value / 2:
-                 value = '2'
-             elif x[Attr.Lifespan.value] >= lifespan_max_value / 2 and x[Attr.Lifespan.value] < lifespan_max_value - (lifespan_max_value / 4):
-                 value = '3'
-             elif x[Attr.Lifespan.value] >= lifespan_max_value - (lifespan_max_value / 4):
-                 value = '4'
-             x[Attr.LifespanInterval.value] = value
+        self._compute_intervals_age(age_max_value, age_min_value, Attr.AgeuponOutcome)
+        self._compute_intervals_lifespan(lifespan_max_value, lifespan_min_value, Attr.Lifespan)
+        self._compute_intervals_puppyprice(puppyprice_max_value, puppyprice_min_value, Attr.PuppyPrice)
+        print('Done: {}'.format(self.create_intervals.__name__))
+
+
+    def _compute_intervals_age(self, max_value, min_value, enum):
+        a = 0
+        b = 0
+        c = 0
+        d = 0
+        for x in self.animal_info:
+            if x[enum.value] >= min_value and x[enum.value] < 125:
+                a += 1
+                value = '1'
+            elif x[enum.value] >= 125 and x[enum.value] < 600:
+                b += 1
+                value = '2'
+            elif x[enum.value] >= 600 and x[enum.value] < 1100:
+                c += 1
+                value = '3'
+            elif x[enum.value] >= 1100:
+                d += 1
+                value = '4'
+            x[Attr.AgeuponOutcomeInterval.value] = value
+
+        print('>= {} and < {}: {}'.format(min_value, 125, a))
+        print('>= {} and < {}: {}'.format(125, 600, b))
+        print('>= {} and < {}: {}'.format(600, 1100, c))
+        print('>= {}: {}'.format(1100, d))
+
+    def _compute_intervals_lifespan(self, max_value, min_value, enum):
+        a = 0
+        b = 0
+        c = 0
+        d = 0
+        for x in self.animal_info:
+            if x[enum.value] >= min_value and x[enum.value] < 5000:
+                a += 1
+                value = '1'
+            elif x[enum.value] >= 5000 and x[enum.value] < 5200:
+                b += 1
+                value = '2'
+            elif x[enum.value] >= 5200 and x[enum.value] < 6000:
+                c += 1
+                value = '3'
+            elif x[enum.value] >= 6000:
+                d += 1
+                value = '4'
+            x[Attr.LifespanInterval.value] = value
+
+        print('>= {} and < {}: {}'.format(min_value, 5000, a))
+        print('>= {} and < {}: {}'.format(5000, 5200, b))
+        print('>= {} and < {}: {}'.format(5200, 6000, c))
+        print('>= {}: {}'.format(6000, d))
+
+    def _compute_intervals_puppyprice(self, max_value, min_value, enum):
+        a = 0
+        b = 0
+        c = 0
+        d = 0
+        for x in self.animal_info:
+            if x[enum.value] >= min_value and x[enum.value] < 350:
+                a += 1
+                value = '1'
+            elif x[enum.value] >= 350 and x[enum.value] < 620:
+                b += 1
+                value = '2'
+            elif x[enum.value] >= 620 and x[enum.value] < 900:
+                c += 1
+                value = '3'
+            elif x[enum.value] >= 900:
+                d += 1
+                value = '4'
+            x[Attr.PuppyPriceInterval.value] = value
+
+        print('>= {} and < {}: {}'.format(min_value, 350, a))
+        print('>= {} and < {}: {}'.format(350, 620, b))
+        print('>= {} and < {}: {}'.format(620, 900, c))
+        print('>= {}: {}'.format(900, d))
+        input()
 
     """
     Método utilizado para gerar o data set final
@@ -305,28 +420,19 @@ class DataDiscretize(object):
 
 
 if __name__ == '__main__':
-    dog_animals_params = [
-            Attr.OutcomeType, Attr.AnimalType, Attr.SexuponOutcome,
+    animals_init_params = [
+            Attr.AnimalType, Attr.SexuponOutcome,
             Attr.AgeuponOutcome, Attr.Breed, Attr.Color
     ]
-    dog_breed_params = [
-            Attr.PuppyPrice, Attr.BarkingTendencies, Attr.Breed, Attr.HealthIssues,
-            Attr.Hypoallergenic, Attr.LitterSize, Attr.CatFriendly, Attr.ExerciseNeeds,
-            Attr.Grooming, Attr.SheddingLevel, Attr.Size, Attr.ChildFriendly, Attr.WatchdogAbility,
-            Attr.DogFriendly, Attr.StrangerFriendly, Attr.Intelligence, Attr.Trainability,
-            Attr.Breed_definition, Attr.Adaptability, Attr.Lifespan, Attr.ApartmentFriendly,
-            Attr.Playfulness
+    animals_params = [
+                Attr.Adaptability, Attr.Vocalization, Attr.Breed, Attr.HealthIssues, Attr.PuppyPrice,
+                Attr.Hypoallergenic, Attr.Grooming, Attr.SheddingLevel, Attr.Size, Attr.ChildFriendly,
+                Attr.DogFriendly, Attr.StrangerFriendly, Attr.Intelligence,Attr.Adaptability,Attr.Lifespan
+
     ]
-    cat_animals_params = [
-                Attr.Adaptability, Attr.AffectionLevel, Attr.Vocalization, Attr.Size,
-                Attr.ChildFriendly, Attr.Lifespan, Attr.StrangerFriendly, Attr.DogFriendly,
-                Attr.MaxPounds, Attr.SocialNeeds, Attr.Breed, Attr.EnergyLevel, Attr.HealthIssues,
-                Attr.Hypoallergenic, Attr.Intelligence, Attr.KittenPrice, Attr.Grooming, Attr.LapCat,
-                Attr.Shedding
-    ]
-    dog_csv = DataDiscretize('train.csv', 'dog_info.csv', 'Dog', dog_animals_params, dog_breed_params, True)
-    final_csv = CSV('dog_final.csv')
-    final_csv.create_new_csv('dog_final.csv', dog_csv.animal_info)
+    info = DataDiscretize('test.csv', 'animal_info.csv', animals_init_params, animals_params, True)
+    final_csv = CSV('test_final.csv')
+    final_csv.create_new_csv('test_final.csv', info.animal_info)
 
 
 
